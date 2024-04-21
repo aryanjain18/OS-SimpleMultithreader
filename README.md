@@ -1,35 +1,28 @@
 **Simple Multithreader**
 
-This repository contains a simple C++ library for parallelizing loop execution using multithreading. It provides functions for parallelizing loops with both single and double parameter lambda functions. The library utilizes the POSIX threads (pthread) library for multithreading.
+This is a simple header-only C++ library for parallelizing for loops using pthreads. It provides two main functions: `parallel_for` for single-threaded execution and `parallel_for` for double-threaded execution. 
 
-### Contents
+### How to Use
 
-- `simple_multithreader.h`: Header file containing the implementation of the multithreading functions.
-- `README.md`: This file, providing an overview of the repository and usage instructions.
+To use the library, include the `simple_multithreader.h` header file in your C++ project. Then, you can use the `parallel_for` functions to parallelize your for loops.
 
-### Usage
+#### Single-threaded execution
+```cpp
+parallel_for(low, high, lambda_function, num_threads);
+```
+- `low`: Starting index of the loop.
+- `high`: Ending index of the loop.
+- `lambda_function`: Lambda function to be executed for each index of the loop.
+- `num_threads`: Number of threads to be used for parallelization.
 
-1. **Include Header File**: Include the `simple_multithreader.h` header file in your C++ project.
-
-   ```cpp
-   #include "simple_multithreader.h"
-   ```
-
-2. **Call Parallel For Functions**: Use the provided functions `parallel_for` to parallelize loop execution.
-
-   - For single parameter lambda functions:
-
-     ```cpp
-     parallel_for(low, high, lambda_function, num_threads);
-     ```
-
-   - For double parameter lambda functions:
-
-     ```cpp
-     parallel_for(low1, high1, low2, high2, lambda_function, num_threads);
-     ```
-
-   Replace `lambda_function` with your lambda function and `num_threads` with the desired number of threads for parallel execution.
+#### Double-threaded execution
+```cpp
+parallel_for(low1, high1, low2, high2, lambda_function, num_threads);
+```
+- `low1`, `high1`: Starting and ending indices of the outer loop.
+- `low2`, `high2`: Starting and ending indices of the inner loop.
+- `lambda_function`: Lambda function to be executed for each index combination of the loops.
+- `num_threads`: Number of threads to be used for parallelization.
 
 ### Example
 
@@ -38,21 +31,27 @@ This repository contains a simple C++ library for parallelizing loop execution u
 #include <iostream>
 
 int main() {
-    // Example of parallelizing loop execution with a single parameter lambda function
-    parallel_for(0, 1000, [](int i) {
-        std::cout << i << std::endl;
-    }, 4); // 4 threads
+    int num_elements = 1000;
 
-    // Example of parallelizing loop execution with a double parameter lambda function
-    parallel_for(0, 100, 0, 10, [](int i, int j) {
-        std::cout << "i: " << i << ", j: " << j << std::endl;
-    }, 2); // 2 threads
+    // Single-threaded execution
+    parallel_for(0, num_elements, [](int i) {
+        std::cout << i << std::endl;
+    }, 4);
+
+    // Double-threaded execution
+    parallel_for(0, num_elements, 0, num_elements, [](int i, int j) {
+        std::cout << i << ", " << j << std::endl;
+    }, 4);
 
     return 0;
 }
 ```
 
-### Contributing
+### Notes
+- Ensure that you compile your program with `-pthread` flag to link with the pthread library.
+- It's recommended to carefully choose the number of threads based on the available hardware resources and the nature of the workload.
+
+### Contributions
 
 - Aryan Jain
 - Parth Sandeep Rastogi
